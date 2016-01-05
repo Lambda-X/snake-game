@@ -12,7 +12,7 @@
         point (subscribe [:point])]
     (fn []
       (let [[width height] @board
-            snake-positions (utils/positions @snake)
+            snake-positions (into #{} @snake)
             current-point @point
             cells (for [y (range height)]
                     (into [:tr]

@@ -10,14 +10,8 @@
 
 (def board [35 25])
 
-(def snake [{:position [3 2]
-             :direction [1 0]}
-            {:position [2 2]
-             :direction [1 0]}
-            {:position [1 2]
-             :direction [1 0]}
-            {:position [0 2]
-             :direction [1 0]}])
+(def snake {:direction [1 0]
+            :body [[3 2] [2 2] [1 2] [0 2]]})
 
 (def initial-state {:board board
                     :snake snake
@@ -47,8 +41,8 @@
 (register-handler
  :change-direction
  (fn [db [_ new-direction]]
-   (update-in db [:snake 0 :direction] (partial utils/change-snake-direction
-                                                new-direction))))
+   (update-in db [:snake :direction] (partial utils/change-snake-direction
+                                             new-direction))))
 
 ;;Register global event listener for keydown event.
 ;;Processes key strokes according to `utils/key-code->move` mapping
@@ -71,7 +65,7 @@
  :snake
  (fn
    [db _]
-   (reaction (:snake @db))))
+   (reaction (:body (:snake @db)))))
 
 (register-sub
  :point

@@ -8,8 +8,6 @@
    39 [1 0]
    37 [-1 0]})
 
-(def positions (comp (partial into #{}) (partial map :position)))
-
 (defn rand-free-position
   "Fuction takes snake and board-size as arguments.,
   and returns random position not colliding wit snake body"
@@ -24,15 +22,15 @@
 (defn collisions
   "Returns true if snake collision with board edges or itself (snake body) is detected"
   [{:keys [snake board] :as db}]
-  (let [[{:keys [position direction]} & rest-of-snake] snake
+  (let [{:keys [body direction]} snake
         [x y] board
         border-x #{x -1}
         border-y #{y -1}
-        future-x (+ (first direction) (first position))
-        future-y (+ (second direction) (second position))]
+        future-x (+ (first direction) (first (first body)))
+        future-y (+ (second direction) (second (first body)))]
     (or (contains? border-x future-x)
         (contains? border-y future-y)
-        (contains? (positions rest-of-snake) [future-x future-y]))))
+        (contains? (into #{} (rest body)) [future-x future-y]))))
 
 (defn change-snake-direction
   "Changes snake head direction, only when it's perpendicular to the old head direction"
@@ -44,28 +42,31 @@
 
 (defn move-snake
   "Move the whole snake based on positions and directions for each snake body segments"
-  [snake]
-  (let [snake-with-new-position (map (fn [{[x y] :position [a b] :direction}]
-                                       {:position [(+ x a) (+ y b)] :direction [a b]})
-                                     snake)]
-    (into [] (conj (map (fn [{[x y] :position} [n-a n-b]]
-                          {:position [x y] :direction [n-a n-b]})
-                        (rest snake-with-new-position)
-                        (map :direction snake-with-new-position))
-                   (first snake-with-new-position)))))
+  [{:keys [direction body] :as snake}]
+  (let [head-new-position (mapv #(+ %1 %2) direction (first body))]
+    (assoc snake :body (into [] (drop-last (cons head-new-position body))))))
+
+(defn snake-tail [coordinate-1 coordinate-2]
+  "Computes x or y tail coordinate according to last 2 values of that coordinate"
+  (if (= coordinate-1 coordinate-2)
+    coordinate-1
+    (if (> coordinate-1 coordinate-2)
+      (dec coordinate-2)
+      (inc coordinate-2))))
 
 (defn grow-snake
   "Append new tail body segment to snake"
-  [snake]
-  (let [{[x y] :position [d-x d-y] :direction} (last snake)]
-    (conj snake {:position [(- x d-x) (- y d-y)]
-                 :direction [d-x d-y]})))
+  [{:keys [body direction] :as snake}]
+  (let [[[first-x first-y] [sec-x sec-y]] (take-last 2 body)
+        x (snake-tail first-x sec-x)
+        y (snake-tail first-y sec-y)]
+    (update-in snake [:body] #(conj % [x y]))))
 
 (defn process-move
   "Evaluates new snake position in context of the whole game"
   [{:keys [snake point board] :as db}]
-  (let [[{:keys [position]}] snake]
-    (if (= point position)
+  (let [] ;;[[{:keys [position]}] snake]
+    (if (= point (first (:body snake)))
       (-> db
           (update-in [:snake] grow-snake)
           (update-in [:points] inc)
