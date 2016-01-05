@@ -12,7 +12,7 @@
   "Fuction takes snake and board-size as arguments.,
   and returns random position not colliding wit snake body"
   [snake [x y]]
-  (let [snake-positions (positions snake)
+  (let [snake-positions (into #{} (:body snake))
         board-positions (for [x-pos (range x)
                               y-pos (range y)]
                           [x-pos y-pos])]
