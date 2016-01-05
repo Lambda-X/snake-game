@@ -1,6 +1,6 @@
 # snake-game
 
-FIXME: Write a one-line description of your library/project.
+Snake game written in ClojureScript using reagent/re-frame
 
 ## Overview
 
