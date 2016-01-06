@@ -41,8 +41,8 @@
 (register-handler
  :change-direction
  (fn [db [_ new-direction]]
-   (update-in db [:snake :direction] (partial utils/change-snake-direction
-                                             new-direction))))
+   (update-in db [:snake :direction]
+              (partial utils/change-snake-direction new-direction))))
 
 ;;Register global event listener for keydown event.
 ;;Processes key strokes according to `utils/key-code->move` mapping

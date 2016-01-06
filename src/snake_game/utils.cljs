@@ -12,11 +12,11 @@
   "Fuction takes snake and board-size as arguments.,
   and returns random position not colliding wit snake body"
   [snake [x y]]
-  (let [snake-positions (into #{} (:body snake))
+  (let [snake-positions-set (into #{} (:body snake))
         board-positions (for [x-pos (range x)
                               y-pos (range y)]
                           [x-pos y-pos])]
-    (when-let [free-positions (seq (remove snake-positions board-positions))]
+    (when-let [free-positions (seq (remove snake-positions-set board-positions))]
       (rand-nth free-positions))))
 
 (defn collisions
@@ -26,7 +26,7 @@
         [x y] board
         border-x #{x -1}
         border-y #{y -1}
-        future-x (+ (first direction) (first (first body)))
+        future-x (+ (first direction) (ffirst body))
         future-y (+ (second direction) (second (first body)))]
     (or (contains? border-x future-x)
         (contains? border-y future-y)
@@ -44,7 +44,7 @@
   "Move the whole snake based on positions and directions for each snake body segments"
   [{:keys [direction body] :as snake}]
   (let [head-new-position (mapv #(+ %1 %2) direction (first body))]
-    (assoc snake :body (into [] (drop-last (cons head-new-position body))))))
+    (update-in snake [:body] #(into [] (drop-last (cons head-new-position body))))))
 
 (defn snake-tail [coordinate-1 coordinate-2]
   "Computes x or y tail coordinate according to last 2 values of that coordinate"
@@ -65,10 +65,9 @@
 (defn process-move
   "Evaluates new snake position in context of the whole game"
   [{:keys [snake point board] :as db}]
-  (let [] ;;[[{:keys [position]}] snake]
-    (if (= point (first (:body snake)))
-      (-> db
-          (update-in [:snake] grow-snake)
-          (update-in [:points] inc)
-          (assoc :point (rand-free-position snake board)))
-      db)))
+  (if (= point (first (:body snake)))
+    (-> db
+        (update-in [:snake] grow-snake)
+        (update-in [:points] inc)
+        (assoc :point (rand-free-position snake board)))
+    db))
