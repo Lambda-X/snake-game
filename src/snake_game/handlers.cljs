@@ -28,9 +28,9 @@
 (register-handler
  :next-state
  (fn
-   [db _]
+   [{:keys [snake board] :as db} _]
    (if (:game db)
-     (if (utils/collisions db)
+     (if (utils/collisions snake board)
        (assoc-in db [:game] false)
        (-> db
            (update-in [:snake] utils/move-snake)

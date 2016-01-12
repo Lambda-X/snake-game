@@ -21,7 +21,7 @@
 
 (defn collisions
   "Returns true if snake collision with board edges or itself (snake body) is detected"
-  [{:keys [snake board] :as db}]
+  [snake board]
   (let [{:keys [body direction]} snake
         [x y] board
         border-x #{x -1}
