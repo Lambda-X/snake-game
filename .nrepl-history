@@ -1,0 +1,16 @@
+exit
+(start-repl)
+exit
+(start-repl)
+exit
+(start-repl)
+exit
+(start-repl)
+exit
+(start-repl)
+exit
+(start-repl)
+(in-ns 'snake-game.utils)
+(js/alert "Smrdis !")
+key-code->move
+exit
