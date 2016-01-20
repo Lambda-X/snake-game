@@ -29,7 +29,7 @@
 (defn game-over
   "Renders the game over overlay if the game is finished"
   []
-  (let [game-state (subscribe [:game])]
+  (let [game-state (subscribe [:game-running?])]
     (fn []
       (if @game-state
         [:div]

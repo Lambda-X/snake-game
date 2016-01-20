@@ -17,7 +17,7 @@
                     :snake snake
                     :point (utils/rand-free-position snake board)
                     :points 0
-                    :game true})
+                    :game-running? true})
 
 (register-handler                  ;; setup initial state
  :initialize                       ;; usage (submit [:initialize])
@@ -29,9 +29,9 @@
  :next-state
  (fn
    [{:keys [snake board] :as db} _]
-   (if (:game db)
+   (if (:game-running? db)
      (if (utils/collisions snake board)
-       (assoc-in db [:game] false)
+       (assoc-in db [:game-running?] false)
        (-> db
            (update-in [:snake] utils/move-snake)
            (as-> after-move
@@ -80,7 +80,7 @@
    (reaction (:points @db))))
 
 (register-sub
- :game
+ :game-running?
  (fn
    [db _]
-   (reaction (:game @db))))
+   (reaction (:game-running? @db))))
