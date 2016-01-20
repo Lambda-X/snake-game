@@ -5,7 +5,7 @@
             [snake-game.utils :as utils]))
 
 (defn render-board
-  "Renders game board area with snake and point to catch"
+  "Renders the game board area with the snake and the point to catch"
   []
   (let [board (subscribe [:board])
         snake (subscribe [:snake])
@@ -27,7 +27,7 @@
               cells)))))
 
 (defn game-over
-  "Renders game over overlay if game is finished"
+  "Renders the game over overlay if the game is finished"
   []
   (let [game-state (subscribe [:game])]
     (fn []
@@ -45,7 +45,7 @@
       [:div.score (str "Score: " @points)])))
 
 (defn game
-  "Main rendering function"
+  "The main rendering function"
   []
   [:div
    [game-over]

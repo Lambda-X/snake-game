@@ -2,15 +2,15 @@
   (:require [reagent.core :as reagent :refer [atom]]))
 
 (def key-code->move
-  "Mapping from integer key code to direction vector corresponding to that key"
+  "Mapping from the integer key code to the direction vector corresponding to that key"
   {38 [0 -1]
    40 [0 1]
    39 [1 0]
    37 [-1 0]})
 
 (defn rand-free-position
-  "Fuction takes snake and board-size as arguments.,
-  and returns random position not colliding wit snake body"
+  "Fuction takes the snake and the board-size as arguments.
+  and returns random position not colliding with the snake body"
   [snake [x y]]
   (let [snake-positions-set (into #{} (:body snake))
         board-positions (for [x-pos (range x)
@@ -20,7 +20,7 @@
       (rand-nth free-positions))))
 
 (defn collisions
-  "Returns true if snake collision with board edges or itself (snake body) is detected"
+  "Returns true if the snake collision with board edges or itself (snake body) is detected"
   [snake board]
   (let [{:keys [body direction]} snake
         [x y] board
@@ -33,7 +33,7 @@
         (contains? (into #{} (rest body)) [future-x future-y]))))
 
 (defn change-snake-direction
-  "Changes snake head direction, only when it's perpendicular to the old head direction"
+  "Changes the snake head direction, only when it's perpendicular to the old head direction"
   [[new-x new-y] [x y]]
   (if (or (= x new-x)
           (= y new-y))
@@ -55,7 +55,7 @@
       (inc coordinate-2))))
 
 (defn grow-snake
-  "Append new tail body segment to snake"
+  "Append new tail body segment to the snake"
   [{:keys [body direction] :as snake}]
   (let [[[first-x first-y] [sec-x sec-y]] (take-last 2 body)
         x (snake-tail first-x sec-x)
